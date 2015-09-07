@@ -1,0 +1,69 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+
+  <title>My Parse App</title>
+  <meta name="description" content="My Parse App">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.5.0.min.js"></script>
+</head>
+
+<body>
+  
+  <div id="main">
+      <h1>Danny McClanahan Question Counter</h1>
+      <p>Danny has asked <span id="count"></span> questions since Monday, September 7th. </p>
+      <p>The last question was asked on <span id="date"></span></p>
+      <button id="increment_button">Danny Asked A Question</button>
+
+  </div>
+
+  <script type="text/javascript">
+    Parse.initialize("pEl4O3YBfwOSNz99fr9wct2Gdsr85iphaVmUEAFY", "BErcjOkRk4tWR0bRuoP2cLM2hwlebd9z8sSdtp48");
+    var global_count = 0;
+    
+    // Get the current count
+    var Counter = Parse.Object.extend("Counter");
+    var query = new Parse.Query(Counter);
+            
+    var counterObj;
+
+    query.get("OYMHX9dQV4", {
+      success: function(counter) {
+        // The object was retrieved successfully.
+        counterObj = counter;
+        global_count = counter.get("count");
+        $("#count").text(global_count);
+
+        $("#date").text(counter.updatedAt);
+      },
+      error: function(object, error) {
+        // The object was not retrieved successfully.
+        // error is a Parse.Error with an error code and message.
+        console.log("Get error: " + error.message);
+      }
+    });
+
+
+    // When the button is pressed, update the counter on parse.
+    $("#increment_button").on("click", function() {
+        counterObj.set("count", global_count + 1);
+        counterObj.save(null, {
+          success: function(object) {
+            $("#count").text(object.get("count"));
+            global_count += 1;
+          },
+          error: function(model, error) {
+            console.log("Set error: " + error.message);
+          }
+        });
+    });
+
+
+  </script>
+</body>
+
+</html>
