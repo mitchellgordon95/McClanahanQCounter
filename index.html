@@ -50,13 +50,14 @@
 
     // When the button is pressed, update the counter on parse.
     $("#increment_button").on("click", function() {
-        counterObj.set("count", global_count + 1);
-        counterObj.save(null, {
-          success: function(object) {
-            $("#count").text(object.get("count"));
-            global_count += 1;
+        Parse.Cloud.run("incrementCounter", {}, {
+          success: function(new_value) {
+            console.log(new_value);
+            global_count = new_value;
+            $("#count").text(global_count);
+            $("#date").text(new Date());
           },
-          error: function(model, error) {
+          error: function(error) {
             console.log("Set error: " + error.message);
           }
         });
