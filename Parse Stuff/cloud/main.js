@@ -8,6 +8,8 @@ Parse.Cloud.define("incrementCounter", function(request, response) {
             {
                 count = counter.get("count") + 1;
                 counter.set("count", count);
+
+                Parse.Cloud.useMasterKey();
                 counter.save(null, {
                     success: function() {
                         response.success(count);
